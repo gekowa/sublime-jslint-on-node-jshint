@@ -3,12 +3,28 @@
     // instead of bundled jslint jar
     "use_node_jslint": false,
 
+    // use jshint (node.js)
+    "use_node_jshint": true,
+
     // Path to the jslint.js
     // Leave blank to use default jslint path
     "node_jslint_path": "",
 
     // Options pass to jslint.js
     "node_jslint_options": "",
+
+    // specify the path jshint.cmd 
+    // leave blank to use default
+    "node_jshint_path": "",
+
+    // jshint need a reporter to work
+    // leave blank to use in box reporter.js
+    "node_jshint_reporter": "",
+
+    // a json file that contains options for jshint
+    // leave blank to use in box jshint config, which is most strict
+    // default file name is jshint-config.json
+    "node_jshint_config": "",
 
     // Path to the jslint jar.
     // Leave blank to use bundled jar.
