@@ -19,6 +19,7 @@ class JslintCommand(sublime_plugin.WindowCommand):
 
     file_path = self.window.active_view().file_name()
     file_name = os.path.basename(file_path)
+    packages_path = sublime.packages_path()
 
     self.debug = s.get('debug', False)
     self.buffered_data = ''
@@ -29,16 +30,29 @@ class JslintCommand(sublime_plugin.WindowCommand):
     self.ignored_error_count = 0
     self.ignore_errors = s.get('ignore_errors', [])
     self.use_node_jslint = s.get('use_node_jslint', False)
-
+    self.use_node_jshint = s.get('use_node_jshint', False)
+    
     self.init_tests_panel()
 
-    if (self.use_node_jslint):
+    if self.use_node_jshint:
+      # reporter
+      if len(s.get('node_jshint_reporter', '')) > 0:
+        node_jshint_reporter = s.get('node_jshint_reporter')
+      else:
+        node_jshint_reporter = packages_path + '/sublime-jslint/' + 'reporter.js'
+      # jshint config
+      if len(s.get('node_jshint_config', '')) > 0:
+        node_jshint_config = s.get('node_jshint_config')
+      else:
+        node_jshint_config =  packages_path + '/sublime-jslint/' + 'jshint-config.json'
+      cmd = 'jshint --reporter "' +  node_jshint_reporter + '" --config "' + node_jshint_config + '" "' + file_path + '"'
+    elif self.use_node_jslint:
       cmd = 'jslint ' + s.get('node_jslint_options', '') + ' "' + file_path + '"'
     else:
       if len(s.get('jslint_jar', '')) > 0:
         jslint_jar = s.get('jslint_jar')
       else:
-        jslint_jar = sublime.packages_path() + '/sublime-jslint/jslint4java-2.0.1.jar'
+        jslint_jar = packages_path + '/sublime-jslint/jslint4java-2.0.1.jar'
       cmd = 'java -jar "' + jslint_jar + '" ' + s.get('jslint_options', '') + ' "' + file_path + '"'
 
     if self.debug:
@@ -83,9 +97,11 @@ class JslintCommand(sublime_plugin.WindowCommand):
 
     # ignore error.
     text = data
+    # print text
     if (len(self.ignore_errors) > 0) and (not self.use_node_jslint):
       text = ''
       for line in data.split('\n'):
+        print line
         if len(line) == 0:
           continue
         ignored = False
@@ -125,6 +141,7 @@ class JslintCommand(sublime_plugin.WindowCommand):
     sublime.status_message(msg + " " + progress)
 
   def proc_terminated(self, proc):
+    print proc.returncode
     if proc.returncode == 0:
       msg = self.file_name + ' lint free!'
     else:
@@ -174,13 +191,24 @@ class JsLintEventListener(sublime_plugin.EventListener):
     self.previous_resion = region
 
     # extract line from jslint result.
-    if (s.get('use_node_jslint', False)):
+    if (s.get("use_node_jslint", False)):
       pattern_position = "\\/\\/ Line (\d+), Pos (\d+)$"
       text = view.substr(region)
       text = re.findall(pattern_position, text)
       if len(text) > 0:
         line = int(text[0][0])
         col = int(text[0][1])
+    elif  (s.get("use_node_jshint", False)):
+      pattern = ""
+      text = view.substr(region).split(':')
+      if len(text) < 3:
+        return
+      line = int(text[0])
+      col = int(text[1])
+      # for v in text:
+      #   print v
+      # line = 0
+      # col = 0
     else:
       text = view.substr(region).split(':')
       if len(text) < 4 or text[0] != 'jslint' or re.match('\d+', text[2]) == None or re.match('\d+', text[3]) == None:
@@ -209,5 +237,3 @@ class JsLintEventListener(sublime_plugin.EventListener):
 
     # highlight file_view line
     file_view.add_regions(RESULT_VIEW_NAME, [file_region], "string")
-
-
