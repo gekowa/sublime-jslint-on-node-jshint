@@ -18,6 +18,9 @@ Features
 
 - Cross platform: support Windows, Linux and Mac OS X
 
+- Also support JSHint on Node (see usage below for instructions)
+
+
 Requirements
 -------------
 
@@ -37,6 +40,12 @@ Installation
     > Mac OS X: ~/Library/Application\ Support/Sublime\ Text\ 2/Packages/
     
     > Linux:    ~/.config/sublime-text-2/Packages
+    
+- If you want to use JSHint, please also install NodeJS and JSHint package before installing the package:
+
+    > Install NodeJS from http://nodejs.org/;
+    
+    > Open command shell and run: npm install jshint -g
 
 How to use?
 -------------
@@ -80,6 +89,11 @@ Settings can be opened via the Command Palette, or the Preferences > Package Set
     }
 
 The available jslint_options: https://github.com/fbzhong/sublime-jslint/wiki/Available-jslint4java-options
+
+When using NodeJS JSHint, please follow steps below:
+    
+    - Open the settings and set "use_node_jshint" to "true"
+    - The default config for JSHint is "jshint-config.json" in the plugin path, you can specify the "node_jshint_config" to use your own.
 
 New BSD License
 -------------
