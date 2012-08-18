@@ -92,8 +92,8 @@ The available jslint_options: https://github.com/fbzhong/sublime-jslint/wiki/Ava
 
 When using NodeJS JSHint, please follow steps below:
     
-    - Open the settings and set "use_node_jshint" to "true"
-    - The default config for JSHint is "jshint-config.json" in the plugin path, you can specify the "node_jshint_config" to use your own.
+- Open the settings and set "use_node_jshint" to "true"
+- The default config for JSHint is "jshint-config.json" in the plugin path, you can specify the "node_jshint_config" to use your own.
 
 New BSD License
 -------------
